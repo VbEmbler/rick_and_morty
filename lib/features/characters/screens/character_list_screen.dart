@@ -4,7 +4,6 @@ import 'package:rick_and_morty/core/voids/voids.dart';
 import 'package:rick_and_morty/features/characters/character_list_bloc/character_list_bloc.dart';
 import 'package:rick_and_morty/features/characters/favorites_character_bloc/favorites_character_bloc.dart';
 import 'package:rick_and_morty/features/characters/widgets/character_list_widget.dart';
-import 'package:rick_and_morty/features/characters/widgets/error_getting_data_widget.dart';
 
 class CharacterListScreen extends StatefulWidget {
   const CharacterListScreen({super.key});
@@ -47,7 +46,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
         listener: (context, state) {
           if (state is CharacterListErrorState) {
             showSnackBar(state, snackBarPosition, context);
-            ErrorGettingDataWidget();
           }
         },
         child: CharacterListWidget(),

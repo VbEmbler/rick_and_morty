@@ -10,7 +10,6 @@ class CharactersApi {
   Future<Object> getCharacterList(String url) async {
     Response response;
     final dio = Dio();
-    //String url = '${Constants.baseURL}${Constants.characterEndpoint}';
     try {
       response = await dio.get(url);
       CharacterListModel characterList = CharacterListModel.fromJson(

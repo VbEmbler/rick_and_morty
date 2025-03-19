@@ -4,10 +4,15 @@ import 'package:rick_and_morty/features/characters/src/local_database/character_
 import 'package:rick_and_morty/rick_and_morty_app.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark,
       statusBarColor: Colors.transparent));
-  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await CharacterFavoritesUtil.init();
 
   runApp(const RickAndMortyApp());

@@ -19,11 +19,31 @@ class LanguageUtils {
       'errorCode': 'Error code',
       'errorMessage': 'Error message',
       'errorGettingData': 'Error getting data',
+      'name': 'Name',
+      'status': 'Status',
+      'species': 'Species',
+      'gender': 'Gender'
     },
   };
 
   static set language(String lang) {
     defaultLanguage = lang;
+  }
+
+  static String get name {
+    return _localizedValues[defaultLanguage]!['name']!;
+  }
+
+  static String get status {
+    return _localizedValues[defaultLanguage]!['status']!;
+  }
+
+  static String get species {
+    return _localizedValues[defaultLanguage]!['species']!;
+  }
+
+  static String get gender {
+    return _localizedValues[defaultLanguage]!['gender']!;
   }
 
   static String get applicationName {

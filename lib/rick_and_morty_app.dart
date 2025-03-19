@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rick_and_morty/core/platform/network_info.dart';
 import 'package:rick_and_morty/core/utils/language_utils.dart';
+import 'package:rick_and_morty/features/characters/character_info_bloc/character_info_bloc.dart';
 import 'package:rick_and_morty/features/characters/character_list_bloc/character_list_bloc.dart';
 import 'package:rick_and_morty/features/characters/favorites_character_bloc/favorites_character_bloc.dart';
 import 'package:rick_and_morty/features/characters/screens/character_list_screen.dart';
@@ -11,6 +12,8 @@ import 'package:rick_and_morty/features/characters/src/api/characters_api.dart';
 import 'package:rick_and_morty/features/characters/src/local_database/character_favorites_util.dart';
 import 'package:rick_and_morty/features/characters/src/repositories/characters_favorites_repository.dart';
 import 'package:rick_and_morty/features/characters/src/repositories/characters_remote_repository.dart';
+
+import 'features/characters/screens/character_info_screen.dart';
 
 class RickAndMortyApp extends StatelessWidget {
   const RickAndMortyApp({super.key});
@@ -44,6 +47,11 @@ class RickAndMortyApp extends StatelessWidget {
                   context.read<CharactersRemoteRepository>(),
             ),
           ),
+          BlocProvider<CharacterInfoBloc>(
+            create: (context) => CharacterInfoBloc(
+                charactersRemoteRepository:
+                    context.read<CharactersRemoteRepository>()),
+          ),
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
@@ -56,13 +64,15 @@ class RickAndMortyApp extends StatelessWidget {
             ),
             textTheme: TextTheme(
               bodyLarge: TextStyle(
+                fontFamily: 'Lato',
                 fontSize: 14,
-                fontWeight: FontWeight.bold,
                 height: 1.4,
               ),
               bodyMedium: TextStyle(
-                fontSize: 14,
+                fontFamily: 'Lato',
+                fontSize: 16,
                 height: 1.4,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -77,10 +87,16 @@ final GoRouter _router = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const CharacterListScreen();
-      },
-    )
+        path: '/',
+        builder: (BuildContext context, GoRouterState state) {
+          return const CharacterListScreen();
+        },
+        routes: [
+          GoRoute(
+              path: 'character_info',
+              builder: (BuildContext context, GoRouterState state) {
+                return const CharacterInfoScreen();
+              }),
+        ])
   ],
 );
