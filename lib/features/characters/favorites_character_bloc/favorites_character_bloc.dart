@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty/features/characters/src/local_database/character_favorites_util.dart';
 
 part 'favorites_character_event.dart';
 part 'favorites_character_state.dart';
@@ -6,8 +7,9 @@ part 'favorites_character_state.dart';
 class FavoritesCharacterBloc
     extends Bloc<FavoritesCharacterEvent, FavoritesCharacterState> {
   Set<int> favoritesCharacter = {};
-  //final SharedPrefer
-  FavoritesCharacterBloc() : super(FavoritesCharacterEmptyState({})) {
+  final CharacterFavoritesUtil characterFavoritesUtil;
+  FavoritesCharacterBloc({required this.characterFavoritesUtil})
+      : super(FavoritesCharacterEmptyState({})) {
     on<FavoritesCharacterInitEvent>(_initFavoritesCharacter);
     on<FavoritesCharacterUpdateEvent>(_updateFavoritesCharacter);
     on<FavoritesCharacterSaveEvent>(_saveFavoritesCharacter);
@@ -17,7 +19,7 @@ class FavoritesCharacterBloc
     FavoritesCharacterInitEvent event,
     Emitter<FavoritesCharacterState> emit,
   ) async {
-    favoritesCharacter = {1, 3, 16};
+    favoritesCharacter = await characterFavoritesUtil.getFavoritesCharacter();
     emit(FavoritesCharacterLoadedState(favoritesCharacter));
   }
 
@@ -38,5 +40,7 @@ class FavoritesCharacterBloc
   _saveFavoritesCharacter(
     FavoritesCharacterSaveEvent event,
     Emitter<FavoritesCharacterState> emit,
-  ) async {}
+  ) async {
+    await characterFavoritesUtil.saveFavoritesCharacter(favoritesCharacter);
+  }
 }

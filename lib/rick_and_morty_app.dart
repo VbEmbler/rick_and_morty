@@ -8,6 +8,8 @@ import 'package:rick_and_morty/features/characters/character_list_bloc/character
 import 'package:rick_and_morty/features/characters/favorites_character_bloc/favorites_character_bloc.dart';
 import 'package:rick_and_morty/features/characters/screens/character_list_screen.dart';
 import 'package:rick_and_morty/features/characters/src/api/characters_api.dart';
+import 'package:rick_and_morty/features/characters/src/local_database/character_favorites_util.dart';
+import 'package:rick_and_morty/features/characters/src/repositories/characters_favorites_repository.dart';
 import 'package:rick_and_morty/features/characters/src/repositories/characters_remote_repository.dart';
 
 class RickAndMortyApp extends StatelessWidget {
@@ -16,6 +18,11 @@ class RickAndMortyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<CharacterFavoritesRepository>(
+          create: (context) => CharacterFavoritesRepository(
+            characterFavoritesUtil: CharacterFavoritesUtil(),
+          ),
+        ),
         RepositoryProvider<CharactersRemoteRepository>(
           create: (context) => CharactersRemoteRepository(
             charactersApi: CharactersApi(),
@@ -27,9 +34,8 @@ class RickAndMortyApp extends StatelessWidget {
         providers: [
           BlocProvider<FavoritesCharacterBloc>(
             create: (context) => FavoritesCharacterBloc(
-                //charactersRemoteRepository: context.read<CharactersRemoteRepository>(),
-                )
-              ..add(FavoritesCharacterInitEvent()),
+              characterFavoritesUtil: CharacterFavoritesUtil(),
+            )..add(FavoritesCharacterInitEvent()),
             lazy: false,
           ),
           BlocProvider<CharacterListBloc>(
