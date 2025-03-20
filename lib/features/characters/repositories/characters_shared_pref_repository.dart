@@ -1,9 +1,9 @@
-import 'package:rick_and_morty/features/characters/src/local_database/character_favorites_util.dart';
+import 'package:rick_and_morty/features/characters/data/local_database/shared_preferences_utils.dart';
 
-class CharacterFavoritesRepository {
-  final CharacterFavoritesUtil characterFavoritesUtil;
+class CharacterSharedPrefRepository {
+  final SharedPreferencesUtils characterFavoritesUtil;
 
-  CharacterFavoritesRepository({required this.characterFavoritesUtil});
+  CharacterSharedPrefRepository({required this.characterFavoritesUtil});
 
   Future<Set<int>> getFavoritesCharacter() async {
     return await characterFavoritesUtil.getFavoritesCharacter();

@@ -3,7 +3,7 @@ import 'package:rick_and_morty/core/api_statuses/api_success.dart';
 import 'package:rick_and_morty/core/platform/network_failure.dart';
 import 'package:rick_and_morty/core/platform/network_info.dart';
 import 'package:rick_and_morty/core/utils/language_utils.dart';
-import 'package:rick_and_morty/features/characters/src/api/characters_api.dart';
+import 'package:rick_and_morty/features/characters/data/api/characters_api.dart';
 
 class CharactersRemoteRepository {
   final NetworkInfo networkInfo;

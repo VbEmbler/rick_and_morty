@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty/core/utils/language_utils.dart';
+import 'package:rick_and_morty/core/voids/voids.dart';
+import 'package:rick_and_morty/features/characters/screens/characters_details/character_details_bloc.dart';
 import 'package:rick_and_morty/features/characters/models/character_model.dart';
-import 'package:rick_and_morty/features/characters/widgets/character_info_tile.dart';
+import 'package:rick_and_morty/features/characters/screens/character_list/character_list_bloc.dart';
+import 'package:rick_and_morty/features/characters/widgets/error_getting_data_widget.dart';
+
+class CharacterDetailsScreen extends StatelessWidget {
+  const CharacterDetailsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double snackBarHeight = 40.0;
+    final double snackBarPosition = screenHeight / 2 - snackBarHeight;
+
+    return Scaffold(
+      body: BlocListener<CharacterDetailsBloc, CharacterDetailsState>(
+        listener: (context, state) {
+          if (state is CharacterDetailsErrorState) {
+            showSnackBar(state, snackBarPosition, context);
+          }
+        },
+        child: BlocBuilder<CharacterDetailsBloc, CharacterDetailsState>(
+          builder: (context, state) {
+            if (state is CharacterDetailsInitState) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is CharacterDetailsLoadedState) {
+              CharacterModel character = state.characterModel;
+              return CharacterInfoWidget(character: character);
+            } else if (state is CharacterListErrorState) {
+              return const ErrorGettingDataWidget();
+            }
+            return Placeholder();
+          },
+        ),
+      ),
+    );
+  }
+}
 
 class CharacterInfoWidget extends StatelessWidget {
   const CharacterInfoWidget({
@@ -89,6 +129,51 @@ class CharacterInfoWidget extends StatelessWidget {
           imagePath: 'assets/gender/${character.gender!.toLowerCase()}.svg',
         )
       ],
+    );
+  }
+}
+
+class CharacterInfoTile extends StatelessWidget {
+  const CharacterInfoTile({
+    super.key,
+    required this.title,
+    required this.subTitle,
+    required this.imagePath,
+  });
+
+  final String subTitle;
+  final String title;
+  final String imagePath;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      visualDensity: VisualDensity.compact,
+      contentPadding: EdgeInsets.only(
+        left: 20,
+      ),
+      minVerticalPadding: 0,
+      leading: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color(0xFF11B0C8),
+          shape: BoxShape.circle,
+        ),
+        child: SvgPicture.asset(
+          colorFilter: ColorFilter.mode(
+            Color(0xFFF8F8F8),
+            BlendMode.srcIn,
+          ),
+          fit: BoxFit.fill,
+          imagePath,
+          height: 24,
+          width: 24,
+        ),
+      ),
+      title: Text(title),
+      subtitle: Text(subTitle),
     );
   }
 }
