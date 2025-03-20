@@ -1,7 +1,7 @@
 import 'package:rick_and_morty/features/characters/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CharacterFavoritesUtil {
+class SharedPreferencesUtils {
   static Future<SharedPreferences> get _getInstance async =>
       prefInstance ??= await SharedPreferences.getInstance();
   static SharedPreferences? prefInstance;

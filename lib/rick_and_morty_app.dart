@@ -4,16 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rick_and_morty/core/platform/network_info.dart';
 import 'package:rick_and_morty/core/utils/language_utils.dart';
-import 'package:rick_and_morty/features/characters/character_info_bloc/character_info_bloc.dart';
-import 'package:rick_and_morty/features/characters/character_list_bloc/character_list_bloc.dart';
-import 'package:rick_and_morty/features/characters/favorites_character_bloc/favorites_character_bloc.dart';
-import 'package:rick_and_morty/features/characters/screens/character_list_screen.dart';
-import 'package:rick_and_morty/features/characters/src/api/characters_api.dart';
-import 'package:rick_and_morty/features/characters/src/local_database/character_favorites_util.dart';
-import 'package:rick_and_morty/features/characters/src/repositories/characters_favorites_repository.dart';
-import 'package:rick_and_morty/features/characters/src/repositories/characters_remote_repository.dart';
-
-import 'features/characters/screens/character_info_screen.dart';
+import 'package:rick_and_morty/features/characters/data/api/characters_api.dart';
+import 'package:rick_and_morty/features/characters/data/local_database/shared_preferences_utils.dart';
+import 'package:rick_and_morty/features/characters/repositories/characters_shared_pref_repository.dart';
+import 'package:rick_and_morty/features/characters/repositories/characters_remote_repository.dart';
+import 'package:rick_and_morty/features/characters/screens/characters_details/character_details_bloc.dart';
+import 'package:rick_and_morty/features/characters/screens/character_list/character_list_bloc.dart';
+import 'package:rick_and_morty/features/characters/screens/character_list/character_list_screen.dart';
+import 'features/characters/screens/characters_details/character_details_screen.dart';
 
 class RickAndMortyApp extends StatelessWidget {
   const RickAndMortyApp({super.key});
@@ -21,9 +19,9 @@ class RickAndMortyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<CharacterFavoritesRepository>(
-          create: (context) => CharacterFavoritesRepository(
-            characterFavoritesUtil: CharacterFavoritesUtil(),
+        RepositoryProvider<CharacterSharedPrefRepository>(
+          create: (context) => CharacterSharedPrefRepository(
+            characterFavoritesUtil: SharedPreferencesUtils(),
           ),
         ),
         RepositoryProvider<CharactersRemoteRepository>(
@@ -35,20 +33,16 @@ class RickAndMortyApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<FavoritesCharacterBloc>(
-            create: (context) => FavoritesCharacterBloc(
-              characterFavoritesUtil: CharacterFavoritesUtil(),
-            )..add(FavoritesCharacterInitEvent()),
-            lazy: false,
-          ),
           BlocProvider<CharacterListBloc>(
             create: (context) => CharacterListBloc(
               charactersRemoteRepository:
                   context.read<CharactersRemoteRepository>(),
-            ),
+              sharedPreferencesUtil: SharedPreferencesUtils(),
+            )..add(CharacterListGetFavoritesEvent()),
+            lazy: false,
           ),
-          BlocProvider<CharacterInfoBloc>(
-            create: (context) => CharacterInfoBloc(
+          BlocProvider<CharacterDetailsBloc>(
+            create: (context) => CharacterDetailsBloc(
                 charactersRemoteRepository:
                     context.read<CharactersRemoteRepository>()),
           ),
@@ -95,7 +89,7 @@ final GoRouter _router = GoRouter(
           GoRoute(
               path: 'character_info',
               builder: (BuildContext context, GoRouterState state) {
-                return const CharacterInfoScreen();
+                return const CharacterDetailsScreen();
               }),
         ])
   ],
