@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:rick_and_morty/core/platform/network_info.dart';
-import 'package:rick_and_morty/core/utils/language_utils.dart';
-import 'package:rick_and_morty/features/characters/data/api/characters_api.dart';
-import 'package:rick_and_morty/features/characters/data/local_database/shared_preferences_utils.dart';
-import 'package:rick_and_morty/features/characters/repositories/characters_shared_pref_repository.dart';
-import 'package:rick_and_morty/features/characters/repositories/characters_remote_repository.dart';
-import 'package:rick_and_morty/features/characters/screens/characters_details/character_details_bloc.dart';
-import 'package:rick_and_morty/features/characters/screens/character_list/character_list_bloc.dart';
-import 'package:rick_and_morty/features/characters/screens/character_list/character_list_screen.dart';
-import 'features/characters/screens/characters_details/character_details_screen.dart';
+import 'package:rick_and_morty/data/api/characters_api.dart';
+import 'package:rick_and_morty/data/local_database/shared_preferences_utils.dart';
+import 'package:rick_and_morty/data/network/network_info.dart';
+import 'package:rick_and_morty/language_utils.dart';
+import 'package:rick_and_morty/repositories/characters_remote_repository.dart';
+import 'package:rick_and_morty/repositories/characters_shared_pref_repository.dart';
+import 'package:rick_and_morty/screens/character_list/character_list_bloc.dart';
+import 'package:rick_and_morty/screens/character_list/character_list_screen.dart';
+import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
+import 'package:rick_and_morty/screens/characters_details/character_details_screen.dart';
 
 class RickAndMortyApp extends StatelessWidget {
   const RickAndMortyApp({super.key});
