@@ -4,7 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty/language_utils.dart';
 import 'package:rick_and_morty/models/character_model.dart';
-import 'package:rick_and_morty/screens/character_list/character_list_bloc.dart';
+import 'package:rick_and_morty/res/project_colors.dart';
+import 'package:rick_and_morty/res/project_icons.dart';
+import 'package:rick_and_morty/res/project_text_styles.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
 import 'package:rick_and_morty/voids.dart';
 import 'package:rick_and_morty/widgets/error_getting_data_widget.dart';
@@ -34,7 +36,7 @@ class CharacterDetailsScreen extends StatelessWidget {
             } else if (state is CharacterDetailsLoadedState) {
               CharacterModel character = state.characterModel;
               return CharacterInfoWidget(character: character);
-            } else if (state is CharacterListErrorState) {
+            } else if (state is CharacterDetailsErrorState) {
               return const ErrorGettingDataWidget();
             }
             return Placeholder();
@@ -96,13 +98,17 @@ class CharacterInfoWidget extends StatelessWidget {
                   width: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ProjectColors.white,
                     shape: BoxShape.circle,
                   ),
                   child: SvgPicture.asset(
-                    'assets/arrow_left.svg',
-                    height: 15,
-                    width: 15,
+                    ProjectIcons.arrowLeft,
+                    height: 24,
+                    width: 24,
+                    colorFilter: ColorFilter.mode(
+                      ProjectColors.nero,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
@@ -115,22 +121,22 @@ class CharacterInfoWidget extends StatelessWidget {
         CharacterInfoTile(
           title: LanguageUtils.name,
           subTitle: '${character.name}',
-          imagePath: 'assets/information.svg',
+          imagePath: ProjectIcons.information,
         ),
         CharacterInfoTile(
           title: LanguageUtils.status,
-          subTitle: '${character.status}',
-          imagePath: 'assets/status/${character.status!.toLowerCase()}.svg',
+          subTitle: '${character.status?.statusUpperCase}',
+          imagePath: '${character.status?.statusIcon}',
         ),
         CharacterInfoTile(
           title: LanguageUtils.species,
-          subTitle: '${character.species}',
-          imagePath: 'assets/species/${character.species!.toLowerCase()}.svg',
+          subTitle: '${character.species?.speciesUpperCase}',
+          imagePath: '${character.species?.speciesIcon}',
         ),
         CharacterInfoTile(
           title: LanguageUtils.gender,
-          subTitle: '${character.gender}',
-          imagePath: 'assets/gender/${character.gender!.toLowerCase()}.svg',
+          subTitle: '${character.gender?.genderUpperCase}',
+          imagePath: '${character.gender?.genderIcon}',
         )
       ],
     );
@@ -162,12 +168,12 @@ class CharacterInfoTile extends StatelessWidget {
         height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Color(0xFF11B0C8),
+          color: ProjectColors.irisBlue,
           shape: BoxShape.circle,
         ),
         child: SvgPicture.asset(
           colorFilter: ColorFilter.mode(
-            Color(0xFFF8F8F8),
+            ProjectColors.whiteSmoke,
             BlendMode.srcIn,
           ),
           fit: BoxFit.fill,
@@ -176,8 +182,16 @@ class CharacterInfoTile extends StatelessWidget {
           width: 24,
         ),
       ),
-      title: Text(title),
-      subtitle: Text(subTitle),
+      title: Text(
+        title,
+        style: ProjectTextStyles.bodyMedium.copyWith(color: ProjectColors.grey),
+      ),
+      subtitle: Text(
+        subTitle,
+        style: ProjectTextStyles.subtitleBold.copyWith(
+          color: ProjectColors.nero,
+        ),
+      ),
     );
   }
 }

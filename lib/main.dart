@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rick_and_morty/data/local_database/shared_preferences_utils.dart';
 import 'package:rick_and_morty/rick_and_morty_app.dart';
 
 void main() async {
@@ -12,8 +11,6 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  await SharedPreferencesUtils.init();
 
   runApp(const RickAndMortyApp());
 }
