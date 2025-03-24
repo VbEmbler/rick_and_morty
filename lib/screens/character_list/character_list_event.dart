@@ -6,13 +6,24 @@ final class CharacterListInitEvent extends CharacterListEvent {}
 
 final class CharacterListFetchEvent extends CharacterListEvent {}
 
-final class CharacterListGetFavoritesEvent extends CharacterListEvent {}
-
-final class CharacterListUpdateFavoritesEvent extends CharacterListEvent {
-  int? favoritesCharacterIndex;
-
-  CharacterListUpdateFavoritesEvent(this.favoritesCharacterIndex);
+final class CharacterListGetFavoriteStatusEvent extends CharacterListEvent {
+  final int characterId;
+  CharacterListGetFavoriteStatusEvent(this.characterId);
 }
 
-final class CharacterListSaveFavoritesCharacterEvent
-    extends CharacterListEvent {}
+final class CharacterListToggleFavoriteEvent extends CharacterListEvent {
+  final int characterId;
+  final bool isFavorite;
+  CharacterListToggleFavoriteEvent(this.characterId, this.isFavorite);
+}
+
+class CharacterListGetFavoritesEvent extends CharacterListEvent {
+  final int characterId;
+  CharacterListGetFavoritesEvent(this.characterId);
+}
+
+class CharacterListSaveFavoriteEvent extends CharacterListEvent {
+  final int characterId;
+  final bool isFavorite;
+  CharacterListSaveFavoriteEvent(this.characterId, this.isFavorite);
+}

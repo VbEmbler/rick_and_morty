@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty/models/character_list_model.dart';
+import 'package:rick_and_morty/res/project_colors.dart';
+import 'package:rick_and_morty/res/project_icons.dart';
+import 'package:rick_and_morty/res/project_text_styles.dart';
 import 'package:rick_and_morty/screens/character_list/character_list_bloc.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
 import 'package:rick_and_morty/voids.dart';
@@ -169,7 +172,7 @@ class CharacterCardWidget extends StatelessWidget {
     return Card(
       elevation: 0,
       clipBehavior: Clip.antiAlias,
-      color: Colors.white,
+      color: ProjectColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -213,11 +216,8 @@ class CharacterCardWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
             child: Text(
               '${characters.characterList![index].name}',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                height: 1.4,
+              style: ProjectTextStyles.bodyBold.copyWith(
+                color: ProjectColors.nero,
               ),
             ),
           ),
@@ -241,37 +241,68 @@ class FavoritesCharacterWidget extends StatefulWidget {
 }
 
 class _FavoritesCharacterWidgetState extends State<FavoritesCharacterWidget> {
+  late bool? isFavorite;
+  late CharacterListBloc characterListBloc;
+  bool isInit = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    characterListBloc = context.read<CharacterListBloc>();
+
+    getIsFavorite().then((value) {
+      setState(() {
+        isFavorite = value;
+        isInit = true;
+      });
+    });
+  }
+
+  Future<bool?> getIsFavorite() async {
+    return await characterListBloc.prefs
+        .getFavoritesCharacter(widget.characterIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isFavorite = context
-        .read<CharacterListBloc>()
-        .favoritesCharacter
-        .contains(widget.characterIndex);
-    return InkWell(
-      onTap: () {
-        context
-            .read<CharacterListBloc>()
-            .add(CharacterListUpdateFavoritesEvent(widget.characterIndex));
-        context
-            .read<CharacterListBloc>()
-            .add(CharacterListSaveFavoritesCharacterEvent());
-        setState(() {});
-      },
-      child: Container(
-        width: 30,
-        height: 30,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
+    if (isInit) {
+      return InkWell(
+        onTap: () {
+          if (isFavorite == null) {
+            setState(() {
+              isFavorite = true;
+            });
+          } else {
+            setState(() {
+              isFavorite = !isFavorite!;
+            });
+          }
+          characterListBloc.add(CharacterListSaveFavoriteEvent(
+              widget.characterIndex, isFavorite!));
+        },
+        child: Container(
+          width: 30,
+          height: 30,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: ProjectColors.white,
+            shape: BoxShape.circle,
+          ),
+          child: SvgPicture.asset(
+            fit: BoxFit.fill,
+            isFavorite == null
+                ? ProjectIcons.unliked
+                : (isFavorite! ? ProjectIcons.liked : ProjectIcons.unliked),
+            height: 20,
+            width: 20,
+          ),
         ),
-        child: SvgPicture.asset(
-          fit: BoxFit.fill,
-          isFavorite ? 'assets/liked.svg' : 'assets/unliked.svg',
-          height: 20,
-          width: 20,
-        ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 }

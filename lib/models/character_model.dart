@@ -1,4 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rick_and_morty/models/chatacter_enum/gender.dart';
+import 'package:rick_and_morty/models/chatacter_enum/species.dart';
+import 'package:rick_and_morty/models/chatacter_enum/status.dart';
 import 'package:rick_and_morty/models/location_model.dart';
 import 'package:rick_and_morty/models/origin_model.dart';
 
@@ -8,10 +11,10 @@ part 'character_model.g.dart';
 class CharacterModel {
   int? id;
   String? name;
-  String? status;
-  String? species;
+  Status? status;
+  Species? species;
   String? type;
-  String? gender;
+  Gender? gender;
   OriginModel? origin;
   LocationModel? location;
   String? image;

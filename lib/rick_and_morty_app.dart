@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rick_and_morty/data/api/characters_api.dart';
-import 'package:rick_and_morty/data/local_database/shared_preferences_utils.dart';
-import 'package:rick_and_morty/data/network/network_info.dart';
+import 'package:rick_and_morty/data/prefs/prefs.dart';
 import 'package:rick_and_morty/language_utils.dart';
-import 'package:rick_and_morty/repositories/characters_remote_repository.dart';
-import 'package:rick_and_morty/repositories/characters_shared_pref_repository.dart';
+import 'package:rick_and_morty/repositories/character_repository.dart';
+import 'package:rick_and_morty/res/project_colors.dart';
 import 'package:rick_and_morty/screens/character_list/character_list_bloc.dart';
 import 'package:rick_and_morty/screens/character_list/character_list_screen.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
@@ -19,15 +17,10 @@ class RickAndMortyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<CharacterSharedPrefRepository>(
-          create: (context) => CharacterSharedPrefRepository(
-            characterFavoritesUtil: SharedPreferencesUtils(),
-          ),
-        ),
-        RepositoryProvider<CharactersRemoteRepository>(
-          create: (context) => CharactersRemoteRepository(
+        RepositoryProvider<CharacterRepository>(
+          create: (context) => CharacterRepository(
             charactersApi: CharactersApi(),
-            networkInfo: NetworkInfo(InternetConnectionChecker.instance),
+            prefs: Prefs(),
           ),
         ),
       ],
@@ -35,16 +28,13 @@ class RickAndMortyApp extends StatelessWidget {
         providers: [
           BlocProvider<CharacterListBloc>(
             create: (context) => CharacterListBloc(
-              charactersRemoteRepository:
-                  context.read<CharactersRemoteRepository>(),
-              sharedPreferencesUtil: SharedPreferencesUtils(),
-            )..add(CharacterListGetFavoritesEvent()),
-            lazy: false,
+              characterRepository: context.read<CharacterRepository>(),
+              prefs: Prefs(),
+            ),
           ),
           BlocProvider<CharacterDetailsBloc>(
             create: (context) => CharacterDetailsBloc(
-                charactersRemoteRepository:
-                    context.read<CharactersRemoteRepository>()),
+                characterRepository: context.read<CharacterRepository>()),
           ),
         ],
         child: MaterialApp.router(
@@ -52,22 +42,9 @@ class RickAndMortyApp extends StatelessWidget {
           title: LanguageUtils.applicationName,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: Color(0xFFF8F8F8),
-              primary: Color(0xFF11B0C8),
-              onPrimary: Colors.white,
-            ),
-            textTheme: TextTheme(
-              bodyLarge: TextStyle(
-                fontFamily: 'Lato',
-                fontSize: 14,
-                height: 1.4,
-              ),
-              bodyMedium: TextStyle(
-                fontFamily: 'Lato',
-                fontSize: 16,
-                height: 1.4,
-                fontWeight: FontWeight.bold,
-              ),
+              seedColor: ProjectColors.whiteSmoke,
+              primary: ProjectColors.irisBlue,
+              onPrimary: ProjectColors.white,
             ),
           ),
           routerConfig: _router,
