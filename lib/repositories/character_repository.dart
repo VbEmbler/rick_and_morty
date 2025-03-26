@@ -1,7 +1,8 @@
 import 'package:rick_and_morty/data/api/characters_api.dart';
 
-import 'package:rick_and_morty/data/network/api_success.dart';
 import 'package:rick_and_morty/data/prefs/prefs.dart';
+import 'package:rick_and_morty/models/character_list_model.dart';
+import 'package:rick_and_morty/models/character_model.dart';
 
 class CharacterRepository {
   final CharactersApi _charactersApi;
@@ -13,24 +14,14 @@ class CharacterRepository {
   })  : _charactersApi = charactersApi,
         _prefs = prefs;
 
-  Future<Object> getCharacterList(int? page) async {
-    try {
-      ApiSuccess response =
-          await _charactersApi.getCharacterList(page) as ApiSuccess;
-      return response;
-    } catch (e) {
-      rethrow;
-    }
+  Future<CharacterListModel> getCharacterList(int? page) async {
+    CharacterListModel response = await _charactersApi.getCharacterList(page);
+    return response;
   }
 
-  Future<Object> getCharacter({required int characterId}) async {
-    try {
-      ApiSuccess response = await _charactersApi.getCharacter(
-          characterId: characterId) as ApiSuccess;
-      return response;
-    } catch (e) {
-      rethrow;
-    }
+  Future<CharacterModel> getCharacter({required int characterId}) async {
+    CharacterModel response = await _charactersApi.getCharacter(characterId: characterId);
+    return response;
   }
 
   Future<bool?> getFavoritesCharacter(int characterId) async {

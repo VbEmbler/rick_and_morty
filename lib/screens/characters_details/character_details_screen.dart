@@ -8,40 +8,27 @@ import 'package:rick_and_morty/res/project_colors.dart';
 import 'package:rick_and_morty/res/project_icons.dart';
 import 'package:rick_and_morty/res/project_text_styles.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
-import 'package:rick_and_morty/voids.dart';
-import 'package:rick_and_morty/widgets/error_getting_data_widget.dart';
+import 'package:rick_and_morty/screens/characters_details/character_details_state.dart';
+import 'package:rick_and_morty/utils/screen_init_status.dart';
 
 class CharacterDetailsScreen extends StatelessWidget {
   const CharacterDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double snackBarHeight = 40.0;
-    final double snackBarPosition = screenHeight / 2 - snackBarHeight;
-
     return Scaffold(
-      body: BlocListener<CharacterDetailsBloc, CharacterDetailsState>(
-        listener: (context, state) {
-          if (state is CharacterDetailsErrorState) {
-            showSnackBar(state, snackBarPosition, context);
+      body: BlocBuilder<CharacterDetailsBloc, CharacterDetailsState>(
+        builder: (context, state) {
+          if (state.screenInitStatus == ScreenInitStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state.screenInitStatus == ScreenInitStatus.success) {
+            CharacterModel character = state.character!;
+            return CharacterInfoWidget(character: character);
           }
+          return Placeholder();
         },
-        child: BlocBuilder<CharacterDetailsBloc, CharacterDetailsState>(
-          builder: (context, state) {
-            if (state is CharacterDetailsInitState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is CharacterDetailsLoadedState) {
-              CharacterModel character = state.characterModel;
-              return CharacterInfoWidget(character: character);
-            } else if (state is CharacterDetailsErrorState) {
-              return const ErrorGettingDataWidget();
-            }
-            return Placeholder();
-          },
-        ),
       ),
     );
   }
@@ -67,14 +54,12 @@ class CharacterInfoWidget extends StatelessWidget {
               child: Image.network(
                 character.image ?? '',
                 fit: BoxFit.cover,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Center(
                     child: CircularProgressIndicator(
                       value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
+                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                           : null,
                     ),
                   );

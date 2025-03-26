@@ -1,8 +1,6 @@
-part of 'character_details_bloc.dart';
-
 abstract class CharacterDetailsEvent {}
 
-final class CharacterInfoInitEvent extends CharacterDetailsEvent {
+final class CharacterDetailsInitEvent extends CharacterDetailsEvent {
   int characterId;
-  CharacterInfoInitEvent({required this.characterId});
+  CharacterDetailsInitEvent({required this.characterId});
 }

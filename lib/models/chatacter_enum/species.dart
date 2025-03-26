@@ -31,6 +31,7 @@ enum Species {
 
   String get speciesIcon => switch (this) {
         Species.human => ProjectIcons.human,
-        _ => ProjectIcons.alien
+        Species.alien => ProjectIcons.alien,
+        _ => ProjectIcons.unknownSpecies
       };
 }
