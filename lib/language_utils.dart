@@ -7,10 +7,8 @@ class LanguageUtils {
       'connectionTimeoutWithAPIServer': 'Connection timeout with API server',
       'connectionToAPIServerFailedDueToInternetConnection':
           'Connection to API server failed due to internet connection',
-      'receiveTimeoutInConnectionWithAPIServer':
-          'Receive timeout in connection with API server',
-      'sendTimeoutInConnectionWithAPIServer':
-          'Send timeout in connection with API server',
+      'receiveTimeoutInConnectionWithAPIServer': 'Receive timeout in connection with API server',
+      'sendTimeoutInConnectionWithAPIServer': 'Send timeout in connection with API server',
       'somethingWentWrong': 'Something went wrong',
       'badRequest': 'Bad request',
       'internalServerError': 'Internal server error',
@@ -51,28 +49,23 @@ class LanguageUtils {
   }
 
   static String get requestToAPIServerWasCancelled {
-    return _localizedValues[defaultLanguage]![
-        'requestToAPIServerWasCancelled']!;
+    return _localizedValues[defaultLanguage]!['requestToAPIServerWasCancelled']!;
   }
 
   static String get connectionTimeoutWithAPIServer {
-    return _localizedValues[defaultLanguage]![
-        'connectionTimeoutWithAPIServer']!;
+    return _localizedValues[defaultLanguage]!['connectionTimeoutWithAPIServer']!;
   }
 
   static String get connectionToAPIServerFailedDueToInternetConnection {
-    return _localizedValues[defaultLanguage]![
-        'connectionToAPIServerFailedDueToInternetConnection']!;
+    return _localizedValues[defaultLanguage]!['connectionToAPIServerFailedDueToInternetConnection']!;
   }
 
   static String get receiveTimeoutInConnectionWithAPIServer {
-    return _localizedValues[defaultLanguage]![
-        'receiveTimeoutInConnectionWithAPIServer']!;
+    return _localizedValues[defaultLanguage]!['receiveTimeoutInConnectionWithAPIServer']!;
   }
 
   static String get sendTimeoutInConnectionWithAPIServer {
-    return _localizedValues[defaultLanguage]![
-        'sendTimeoutInConnectionWithAPIServer']!;
+    return _localizedValues[defaultLanguage]!['sendTimeoutInConnectionWithAPIServer']!;
   }
 
   static String get somethingWentWrong {

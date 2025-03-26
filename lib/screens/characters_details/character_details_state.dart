@@ -1,21 +1,22 @@
-part of 'character_details_bloc.dart';
+import 'package:rick_and_morty/models/character_model.dart';
+import 'package:rick_and_morty/utils/screen_init_status.dart';
 
-abstract class CharacterDetailsState {}
+class CharacterDetailsState {
+  final CharacterModel? character;
+  final ScreenInitStatus screenInitStatus;
 
-final class CharacterDetailsEmptyState extends CharacterDetailsState {}
+  CharacterDetailsState({
+    this.character,
+    this.screenInitStatus = ScreenInitStatus.loading,
+  });
 
-final class CharacterDetailsInitState extends CharacterDetailsState {}
-
-final class CharacterDetailsLoadedState extends CharacterDetailsState {
-  CharacterModel characterModel;
-  CharacterDetailsLoadedState({required this.characterModel});
-}
-
-final class CharacterDetailsErrorState extends CharacterDetailsState
-    implements ErrorState {
-  @override
-  int? errorCode;
-  @override
-  String? errorMessage;
-  CharacterDetailsErrorState({this.errorCode, this.errorMessage});
+  CharacterDetailsState copyWith({
+    CharacterModel? character,
+    ScreenInitStatus? screenInitStatus,
+  }) {
+    return CharacterDetailsState(
+      character: character ?? this.character,
+      screenInitStatus: screenInitStatus ?? this.screenInitStatus,
+    );
+  }
 }
