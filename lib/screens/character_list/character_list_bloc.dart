@@ -29,7 +29,7 @@ class CharacterListBloc extends Bloc<CharacterListEvent, CharacterListState> {
       nextPageId = _getNextPageId(characterListModel.info!.next!);
     }
 
-    Map<String, bool> likedCharacters = await _characterRepository.getFavoritesCharacter();
+    Map<String, bool> likedCharacters = await _characterRepository.getFavoritesCharacters();
     emit(
       CharacterListState().copyWith(
           characterList: characterListModel.characterList,

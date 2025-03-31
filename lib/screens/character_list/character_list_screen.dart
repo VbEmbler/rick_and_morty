@@ -11,6 +11,7 @@ import 'package:rick_and_morty/screens/character_list/character_list_event.dart'
 import 'package:rick_and_morty/screens/character_list/character_list_state.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_event.dart';
+import 'package:rick_and_morty/sl.dart';
 import 'package:rick_and_morty/utils/screen_init_status.dart';
 
 class CharacterListScreen extends StatelessWidget {
@@ -18,8 +19,7 @@ class CharacterListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CharacterListBloc characterListBloc = context.read<CharacterListBloc>();
-    characterListBloc.add(InitEvent());
+    sl<CharacterListBloc>().add(InitEvent());
 
     return Scaffold(
       body: CharacterListWidget(),
@@ -77,9 +77,9 @@ class _CharacterGridViewWidgetState extends State<CharacterGridViewWidget> {
   }
 
   void _onScroll() {
-    CharacterListState characterListState = context.read<CharacterListBloc>().state;
+    CharacterListState characterListState = sl<CharacterListBloc>().state;
     if (_isBottom && !characterListState.isFetching && !characterListState.isLastPage) {
-      context.read<CharacterListBloc>().add(FetchEvent());
+      sl<CharacterListBloc>().add(FetchEvent());
     }
   }
 
@@ -139,7 +139,7 @@ class CharacterCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<CharacterDetailsBloc>().add(CharacterDetailsInitEvent(characterId: character.id));
+        sl<CharacterDetailsBloc>().add(CharacterDetailsInitEvent(characterId: character.id));
         context.go('/character_info');
       },
       child: Card(
@@ -222,7 +222,7 @@ class FavoritesCharacterWidget extends StatelessWidget {
             } else {
               isLiked = !isLiked!;
             }
-            context.read<CharacterListBloc>().add(FavoriteToggledEvent(characterId, isLiked!));
+            sl<CharacterListBloc>().add(FavoriteToggledEvent(characterId, isLiked!));
           },
           child: Container(
             width: 30,
