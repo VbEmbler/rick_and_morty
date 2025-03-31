@@ -24,8 +24,8 @@ class CharacterRepository {
     return response;
   }
 
-  Future<bool?> getFavoritesCharacter(int characterId) async {
-    return await _prefs.getFavoritesCharacter(characterId);
+  Future<Map<String, bool>> getFavoritesCharacter() async {
+    return await _prefs.getFavoritesCharacter();
   }
 
   Future saveFavoritesCharacter(int characterId, bool isLiked) async {

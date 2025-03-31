@@ -27,14 +27,41 @@ class CharacterListScreen extends StatelessWidget {
   }
 }
 
-class CharacterListWidget extends StatefulWidget {
+class CharacterListWidget extends StatelessWidget {
   const CharacterListWidget({super.key});
 
   @override
-  State<CharacterListWidget> createState() => _CharacterListWidgetState();
+  Widget build(BuildContext context) {
+    return BlocBuilder<CharacterListBloc, CharacterListState>(
+      builder: (context, state) {
+        if (state.screenInitStatus == ScreenInitStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.screenInitStatus == ScreenInitStatus.success) {
+          return CharacterGridViewWidget(
+            state: state,
+          );
+        }
+        return Placeholder();
+      },
+    );
+  }
 }
 
-class _CharacterListWidgetState extends State<CharacterListWidget> {
+class CharacterGridViewWidget extends StatefulWidget {
+  const CharacterGridViewWidget({
+    super.key,
+    required this.state,
+  });
+
+  final CharacterListState state;
+
+  @override
+  State<CharacterGridViewWidget> createState() => _CharacterGridViewWidgetState();
+}
+
+class _CharacterGridViewWidgetState extends State<CharacterGridViewWidget> {
   final _scrollController = ScrollController();
 
   @override
@@ -64,43 +91,6 @@ class _CharacterListWidgetState extends State<CharacterListWidget> {
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).viewPadding.top;
     final double paddingTop = statusBarHeight + 20;
-    return BlocBuilder<CharacterListBloc, CharacterListState>(
-      builder: (context, state) {
-        if (state.screenInitStatus == ScreenInitStatus.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state.screenInitStatus == ScreenInitStatus.success) {
-          List<CharacterModel> characters = state.characterList!;
-          return CharacterGridViewWidget(
-            paddingTop: paddingTop,
-            scrollController: _scrollController,
-            characters: characters,
-            state: state,
-          );
-        }
-        return Placeholder();
-      },
-    );
-  }
-}
-
-class CharacterGridViewWidget extends StatelessWidget {
-  const CharacterGridViewWidget({
-    super.key,
-    required this.paddingTop,
-    required ScrollController scrollController,
-    required this.characters,
-    required this.state,
-  }) : _scrollController = scrollController;
-
-  final double paddingTop;
-  final ScrollController _scrollController;
-  final List<CharacterModel> characters;
-  final CharacterListState state;
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
@@ -113,25 +103,19 @@ class CharacterGridViewWidget extends StatelessWidget {
             controller: _scrollController,
             crossAxisCount: 2,
             children: List.generate(
-              characters.length,
+              widget.state.characterList.length,
               (index) {
                 return GestureDetector(
-                  onTap: () {
-                    context
-                        .read<CharacterDetailsBloc>()
-                        .add(CharacterDetailsInitEvent(characterId: characters[index].id!));
-                    context.go('/character_info');
-                  },
+                  onTap: () {},
                   child: CharacterCardWidget(
-                    characters: characters,
-                    index: index,
+                    character: widget.state.characterList[index],
                   ),
                 );
               },
             ),
           ),
         ),
-        if (state.isFetching)
+        if (widget.state.isFetching)
           const Padding(
             padding: EdgeInsets.only(top: 10, bottom: 40),
             child: Center(
@@ -146,147 +130,117 @@ class CharacterGridViewWidget extends StatelessWidget {
 class CharacterCardWidget extends StatelessWidget {
   const CharacterCardWidget({
     super.key,
-    required this.characters,
-    required this.index,
+    required this.character,
   });
 
-  final List<CharacterModel> characters;
-  final int index;
+  final CharacterModel character;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      clipBehavior: Clip.antiAlias,
-      color: ProjectColors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Image.network(
-                fit: BoxFit.cover,
-                characters[index].image ?? '',
-                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  );
-                },
-                errorBuilder: (context, exception, stackTrace) {
-                  return Center(
-                    child: Icon(
-                      Icons.error,
-                    ),
-                  );
-                },
-              ),
-              Positioned(
-                right: 10,
-                top: 10,
-                child: FavoritesCharacterWidget(
-                  characterIndex: index,
+    return GestureDetector(
+      onTap: () {
+        context.read<CharacterDetailsBloc>().add(CharacterDetailsInitEvent(characterId: character.id));
+        context.go('/character_info');
+      },
+      child: Card(
+        elevation: 0,
+        clipBehavior: Clip.antiAlias,
+        color: ProjectColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Image.network(
+                  fit: BoxFit.cover,
+                  character.image ?? '',
+                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Center(
+                      child: Icon(
+                        Icons.error,
+                      ),
+                    );
+                  },
+                ),
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: FavoritesCharacterWidget(
+                    characterId: character.id,
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
+              child: Text(
+                '${character.name}',
+                style: ProjectTextStyles.bodyBold.copyWith(
+                  color: ProjectColors.nero,
                 ),
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
-            child: Text(
-              '${characters[index].name}',
-              style: ProjectTextStyles.bodyBold.copyWith(
-                color: ProjectColors.nero,
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class FavoritesCharacterWidget extends StatefulWidget {
-  final int characterIndex;
+class FavoritesCharacterWidget extends StatelessWidget {
+  final int characterId;
 
   const FavoritesCharacterWidget({
     super.key,
-    required this.characterIndex,
+    required this.characterId,
   });
 
   @override
-  State<FavoritesCharacterWidget> createState() => _FavoritesCharacterWidgetState();
-}
-
-class _FavoritesCharacterWidgetState extends State<FavoritesCharacterWidget> {
-  late bool? isLiked;
-  late CharacterListBloc characterListBloc;
-  bool isInit = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    characterListBloc = context.read<CharacterListBloc>();
-
-    getIsFavorite().then((value) {
-      setState(() {
-        isLiked = value;
-        isInit = true;
-      });
-    });
-  }
-
-  Future<bool?> getIsFavorite() async {
-    return await characterListBloc.prefs.getFavoritesCharacter(widget.characterIndex);
-  }
-
-  Future saveFavoritesCharacter(int characterId, bool isLiked) async {
-    characterListBloc.prefs.saveFavoritesCharacter(characterId, isLiked);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (isInit) {
-      return InkWell(
-        onTap: () {
-          if (isLiked == null) {
-            setState(() {
+    return BlocBuilder<CharacterListBloc, CharacterListState>(
+      buildWhen: (previous, current) {
+        return previous.likedCharacter != current.likedCharacter;
+      },
+      builder: (context, state) {
+        bool? isLiked = state.likedCharacter[characterId.toString()];
+        return InkWell(
+          onTap: () {
+            if (isLiked == null) {
               isLiked = true;
-            });
-          } else {
-            setState(() {
+            } else {
               isLiked = !isLiked!;
-            });
-          }
-          //characterListBloc.add(CharacterListSaveFavoriteEvent(widget.characterIndex, isFavorite!));
-          saveFavoritesCharacter(widget.characterIndex, isLiked!);
-        },
-        child: Container(
-          width: 30,
-          height: 30,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: ProjectColors.white,
-            shape: BoxShape.circle,
+            }
+            context.read<CharacterListBloc>().add(FavoriteToggledEvent(characterId, isLiked!));
+          },
+          child: Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: ProjectColors.white,
+              shape: BoxShape.circle,
+            ),
+            child: SvgPicture.asset(
+              fit: BoxFit.fill,
+              isLiked == null ? ProjectIcons.unliked : (isLiked ? ProjectIcons.liked : ProjectIcons.unliked),
+              height: 20,
+              width: 20,
+            ),
           ),
-          child: SvgPicture.asset(
-            fit: BoxFit.fill,
-            isLiked == null ? ProjectIcons.unliked : (isLiked! ? ProjectIcons.liked : ProjectIcons.unliked),
-            height: 20,
-            width: 20,
-          ),
-        ),
-      );
-    } else {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+        );
+      },
+    );
   }
 }
