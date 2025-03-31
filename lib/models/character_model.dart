@@ -9,7 +9,7 @@ part 'character_model.g.dart';
 
 @JsonSerializable()
 class CharacterModel {
-  int? id;
+  int id;
   String? name;
   Status? status;
   Species? species;
@@ -23,7 +23,7 @@ class CharacterModel {
   String? created;
 
   CharacterModel({
-    this.id,
+    required this.id,
     this.name,
     this.status,
     this.species,
@@ -37,6 +37,5 @@ class CharacterModel {
     this.created,
   });
 
-  factory CharacterModel.fromJson(Map<String, dynamic> json) =>
-      _$CharacterModelFromJson(json);
+  factory CharacterModel.fromJson(Map<String, dynamic> json) => _$CharacterModelFromJson(json);
 }

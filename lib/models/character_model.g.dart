@@ -8,7 +8,7 @@ part of 'character_model.dart';
 
 CharacterModel _$CharacterModelFromJson(Map<String, dynamic> json) =>
     CharacterModel(
-      id: (json['id'] as num?)?.toInt(),
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String?,
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']),
       species: $enumDecodeNullable(_$SpeciesEnumMap, json['species']),

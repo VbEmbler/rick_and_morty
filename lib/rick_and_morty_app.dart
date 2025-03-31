@@ -29,12 +29,10 @@ class RickAndMortyApp extends StatelessWidget {
           BlocProvider<CharacterListBloc>(
             create: (context) => CharacterListBloc(
               characterRepository: context.read<CharacterRepository>(),
-              prefs: Prefs(),
             ),
           ),
           BlocProvider<CharacterDetailsBloc>(
-            create: (context) => CharacterDetailsBloc(
-                characterRepository: context.read<CharacterRepository>()),
+            create: (context) => CharacterDetailsBloc(characterRepository: context.read<CharacterRepository>()),
           ),
         ],
         child: MaterialApp.router(
