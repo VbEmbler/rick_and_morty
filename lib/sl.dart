@@ -6,28 +6,29 @@ import 'package:rick_and_morty/screens/characters_details/character_details_bloc
 
 import 'data/prefs/prefs.dart';
 
-final sl = GetIt.I;
+final getIt = GetIt.I;
 
 void initLocator() {
   //data
-  sl.registerLazySingleton<CharactersApi>(() => CharactersApi());
-  sl.registerLazySingleton<Prefs>(() => Prefs());
+  getIt.registerSingleton<CharactersApi>(CharactersApi());
+  getIt.registerSingleton<Prefs>(Prefs());
 
   //repositories
-  sl.registerSingleton<CharacterRepository>(CharacterRepository(
-    charactersApi: sl<CharactersApi>(),
-    prefs: sl<Prefs>(),
+  getIt.registerSingleton<CharacterRepository>(CharacterRepository(
+    charactersApi: getIt<CharactersApi>(),
+    prefs: getIt<Prefs>(),
   ));
 
   //bloc
-  sl.registerSingleton<CharacterListBloc>(
-    CharacterListBloc(
-      characterRepository: sl<CharacterRepository>(),
-    ),
-  );
-  sl.registerSingleton<CharacterDetailsBloc>(
-    CharacterDetailsBloc(
-      characterRepository: sl<CharacterRepository>(),
-    ),
-  );
+  getIt.registerFactory<CharacterListBloc>(() {
+    return CharacterListBloc(
+      characterRepository: getIt<CharacterRepository>(),
+    );
+  });
+
+  getIt.registerFactory<CharacterDetailsBloc>(() {
+    return CharacterDetailsBloc(
+      characterRepository: getIt<CharacterRepository>(),
+    );
+  });
 }
