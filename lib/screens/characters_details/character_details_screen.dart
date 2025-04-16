@@ -8,27 +8,34 @@ import 'package:rick_and_morty/res/project_colors.dart';
 import 'package:rick_and_morty/res/project_icons.dart';
 import 'package:rick_and_morty/res/project_text_styles.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_bloc.dart';
+import 'package:rick_and_morty/screens/characters_details/character_details_event.dart';
 import 'package:rick_and_morty/screens/characters_details/character_details_state.dart';
+import 'package:rick_and_morty/sl.dart';
 import 'package:rick_and_morty/utils/screen_init_status.dart';
 
 class CharacterDetailsScreen extends StatelessWidget {
-  const CharacterDetailsScreen({super.key});
+  final int? characterId;
+
+  const CharacterDetailsScreen({super.key, this.characterId});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<CharacterDetailsBloc, CharacterDetailsState>(
-        builder: (context, state) {
-          if (state.screenInitStatus == ScreenInitStatus.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state.screenInitStatus == ScreenInitStatus.success) {
-            CharacterModel character = state.character!;
-            return CharacterInfoWidget(character: character);
-          }
-          return Placeholder();
-        },
+    return BlocProvider(
+      create: (context) => getIt<CharacterDetailsBloc>()..add(CharacterDetailsInitEvent(characterId: characterId!)),
+      child: Scaffold(
+        body: BlocBuilder<CharacterDetailsBloc, CharacterDetailsState>(
+          builder: (context, state) {
+            if (state.screenInitStatus == ScreenInitStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state.screenInitStatus == ScreenInitStatus.success) {
+              CharacterModel character = state.character!;
+              return CharacterInfoWidget(character: character);
+            }
+            return Placeholder();
+          },
+        ),
       ),
     );
   }
