@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 import 'package:rick_and_morty/models/character_list_model.dart';
 import 'package:rick_and_morty/models/character_model.dart';
@@ -7,6 +8,7 @@ import 'package:rick_and_morty/screens/character_list/character_list_event.dart'
 import 'package:rick_and_morty/screens/character_list/character_list_state.dart';
 import 'package:rick_and_morty/utils/screen_init_status.dart';
 
+@injectable
 class CharacterListBloc extends Bloc<CharacterListEvent, CharacterListState> {
   final CharacterRepository _characterRepository;
 

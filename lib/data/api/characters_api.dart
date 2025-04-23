@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
 import 'package:rick_and_morty/models/character_list_model.dart';
 import 'package:rick_and_morty/models/character_model.dart';
 
+@singleton
 class CharactersApi {
   static const _baseURL = "https://rickandmortyapi.com/api";
 

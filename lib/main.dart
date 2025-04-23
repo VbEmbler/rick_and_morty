@@ -12,7 +12,6 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  initLocator();
-
+  configureDependencies();
   runApp(const RickAndMortyApp());
 }
