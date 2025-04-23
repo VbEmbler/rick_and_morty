@@ -43,6 +43,8 @@ class CharacterListBloc extends Bloc<CharacterListEvent, CharacterListState> {
     FetchEvent event,
     Emitter<CharacterListState> emit,
   ) async {
+    if (state.isFetching) return;
+
     emit(state.copyWith(
       isFetching: true,
     ));
