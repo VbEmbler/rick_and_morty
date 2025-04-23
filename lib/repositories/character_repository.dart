@@ -1,9 +1,11 @@
+import 'package:injectable/injectable.dart';
 import 'package:rick_and_morty/data/api/characters_api.dart';
 
 import 'package:rick_and_morty/data/prefs/prefs.dart';
 import 'package:rick_and_morty/models/character_list_model.dart';
 import 'package:rick_and_morty/models/character_model.dart';
 
+@singleton
 class CharacterRepository {
   final CharactersApi _charactersApi;
   final Prefs _prefs;

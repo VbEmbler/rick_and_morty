@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String favoritesKey = 'favorites_';
 
+@singleton
 class Prefs {
   Future<Map<String, bool>> getFavoritesCharacter() async {
     Map<String, bool> likedCharacters = {};
